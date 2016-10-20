@@ -18,3 +18,5 @@ text.textColor             = [UIColor grayColor];
 
 //set placeholder
 text.zp_placeholder        = text_placeholder;
+
+博客地址：http://www.jianshu.com/p/4e1bac661ad0
