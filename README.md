@@ -18,4 +18,3 @@ text.textColor             = [UIColor grayColor];
 
 //set placeholder
 text.zp_placeholder        = text_placeholder;
-
