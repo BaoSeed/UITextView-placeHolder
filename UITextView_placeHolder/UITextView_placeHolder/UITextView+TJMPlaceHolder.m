@@ -8,6 +8,7 @@
 
 #import "UITextView+TJMPlaceHolder.h"
 #import <objc/runtime.h>
+#import "NSObject+TJMSwizzle.h"
 
 static void * TJMTextViewTextChangedContext= & TJMTextViewTextChangedContext;
 
@@ -22,48 +23,22 @@ static void * TJMTextViewTextChangedContext= & TJMTextViewTextChangedContext;
 @end
 
 @implementation UITextView (TJMPlaceHolder)
-
-void tjm_ObjcSwizzleMethod(Class cls,
-                           SEL originalSelector,
-                           SEL swizzledSelector)
-{
-    Method originalMethod = class_getInstanceMethod(cls, originalSelector);
-    Method swizzledMethod = class_getInstanceMethod(cls, swizzledSelector);
-    
-    BOOL didAddMethod =
-    class_addMethod(cls,
-                    originalSelector,
-                    method_getImplementation(swizzledMethod),
-                    method_getTypeEncoding(swizzledMethod));
-    
-    if (didAddMethod)
-    {
-        class_replaceMethod(cls,
-                            swizzledSelector,
-                            method_getImplementation(originalMethod),
-                            method_getTypeEncoding(originalMethod));
-    }
-    else
-    {
-        method_exchangeImplementations(originalMethod, swizzledMethod);
-    }
-}
-
 + (void)load
 {
+   // [super load];
     
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^
-                  {
-                      
-                      tjm_ObjcSwizzleMethod([self class],
-                                            @selector(drawRect:),
-                                            @selector(place_drawRect:));
-                      
-                      tjm_ObjcSwizzleMethod([self class],
-                                            NSSelectorFromString(@"dealloc"),
-                                            @selector(place_dealloc));
-                  });
+    {
+        
+        tjm_ObjcSwizzleMethod([self class],
+                        @selector(drawRect:),
+                        @selector(place_drawRect:));
+        
+        tjm_ObjcSwizzleMethod([self class],
+                              NSSelectorFromString(@"dealloc"),
+                              @selector(place_dealloc));
+    });
 }
 
 
@@ -71,8 +46,8 @@ void tjm_ObjcSwizzleMethod(Class cls,
 {
     if(self.isExcuteNoti){
         
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:UITextViewTextDidChangeNotification object:self];
-        
+      [[NSNotificationCenter defaultCenter] removeObserver:self name:UITextViewTextDidChangeNotification object:self];
+      
         [self removeObserver:self forKeyPath:@"text" context:TJMTextViewTextChangedContext];
     }
     
@@ -104,37 +79,37 @@ void tjm_ObjcSwizzleMethod(Class cls,
             paragraphStyle.alignment = self.textAlignment;
             paragraphStyle.paragraphSpacing   = 2;
             paragraphStyle.firstLineHeadIndent= 7;
-            //            paragraphStyle.headIndent=2;
-            //            paragraphStyle.paragraphSpacingBefore=2;
-            //            paragraphStyle.defaultTabInterval=2;
+//            paragraphStyle.headIndent=2;
+//            paragraphStyle.paragraphSpacingBefore=2;
+//            paragraphStyle.defaultTabInterval=2;
             
             [self.tjm_placeholder drawInRect:placeHolderRect
                               withAttributes:
-             
-             @{ NSFontAttributeName :            placeFont,
-                NSForegroundColorAttributeName:  placeColor,
-                NSParagraphStyleAttributeName :   paragraphStyle
-                }
+  
+              @{ NSFontAttributeName :            placeFont,
+                 NSForegroundColorAttributeName:  placeColor,
+                 NSParagraphStyleAttributeName :   paragraphStyle
+              }
              ];
         }
         
         else
         {
-            
+         
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored"-Wdeprecated-declarations"
             
             [self.tjm_placeholder drawInRect:placeHolderRect
-                                    withFont:placeFont
-                               lineBreakMode:NSLineBreakByTruncatingTail
-                                   alignment:self.textAlignment];
+                                withFont:placeFont
+                           lineBreakMode:NSLineBreakByTruncatingTail
+                               alignment:self.textAlignment];
             
             
 #pragma clang diagnostic pop
         }
     }
-    
-    
+
+
     [self place_drawRect:rect];
 }
 #pragma mark - UITextViewTextDidChangeNotification
@@ -145,14 +120,14 @@ void tjm_ObjcSwizzleMethod(Class cls,
 }
 #pragma mark - KVO  监听手动设置text
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{
-    
+  
     if (object == self &&
         [keyPath isEqualToString:@"text"]
         && context==TJMTextViewTextChangedContext) {
         
-        
+    
         [self setNeedsDisplay];
-        
+      
     } else {
         // Make sure to call the superclass's implementation in the else block in case it is also implementing KVO
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -165,7 +140,7 @@ void tjm_ObjcSwizzleMethod(Class cls,
 {
     
     objc_setAssociatedObject(self,
-                             @selector(tjm_placeholder),
+                              @selector(tjm_placeholder),
                              tjm_placeholder,
                              OBJC_ASSOCIATION_COPY_NONATOMIC);
     
@@ -181,7 +156,7 @@ void tjm_ObjcSwizzleMethod(Class cls,
         self.isExcuteNoti = 1;
     }
     
-    [self setNeedsDisplay];
+      [self setNeedsDisplay];
     
 }
 - (NSString *)tjm_placeholder
@@ -195,11 +170,11 @@ void tjm_ObjcSwizzleMethod(Class cls,
                              tjm_placeholderColor,
                              OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     
-    [self setNeedsDisplay];
+       [self setNeedsDisplay];
 }
 - (UIColor *)tjm_placeholderColor
 {
-    return objc_getAssociatedObject(self, _cmd);
+      return objc_getAssociatedObject(self, _cmd);
 }
 - (void)setTjm_placeholderFont:(UIFont *)tjm_placeholderFont
 {
@@ -208,15 +183,15 @@ void tjm_ObjcSwizzleMethod(Class cls,
                              tjm_placeholderFont,
                              OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     
-    [self setNeedsDisplay];
+      [self setNeedsDisplay];
 }
 - (UIFont *)tjm_placeholderFont
 {
-    return objc_getAssociatedObject(self, _cmd);
+      return objc_getAssociatedObject(self, _cmd);
 }
 
 - (void)setTjm_placeContainerInset:(UIEdgeInsets)tjm_placeContainerInset{
-    
+   
     objc_setAssociatedObject(self,
                              @selector(tjm_placeContainerInset),
                              [NSValue valueWithUIEdgeInsets:tjm_placeContainerInset],
@@ -225,9 +200,9 @@ void tjm_ObjcSwizzleMethod(Class cls,
     [self setNeedsDisplay];
 }
 - (UIEdgeInsets)tjm_placeContainerInset{
-    
+  
     NSValue *insetValue = objc_getAssociatedObject(self, _cmd);
-    return [insetValue UIEdgeInsetsValue];
+     return [insetValue UIEdgeInsetsValue];
 }
 
 - (void)setIsExcuteNoti:(BOOL)isExcuteNoti
@@ -244,4 +219,3 @@ void tjm_ObjcSwizzleMethod(Class cls,
 
 
 @end
-
