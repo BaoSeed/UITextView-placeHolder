@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B5E3B841B13D8E1AA1C05520 /* libPods-UITextView_placeHolder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C4DEF3567DC72E631D5475A /* libPods-UITextView_placeHolder.a */; };
 		F52845551EBE320E00D1CC3D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F52845541EBE320E00D1CC3D /* main.m */; };
 		F52845581EBE320E00D1CC3D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F52845571EBE320E00D1CC3D /* AppDelegate.m */; };
 		F528455B1EBE320E00D1CC3D /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F528455A1EBE320E00D1CC3D /* ViewController.m */; };
@@ -38,6 +39,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0657E5BAA8E5B9A5E223561E /* Pods-UITextView_placeHolder.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UITextView_placeHolder.release.xcconfig"; path = "../Pods/Target Support Files/Pods-UITextView_placeHolder/Pods-UITextView_placeHolder.release.xcconfig"; sourceTree = "<group>"; };
+		7C4DEF3567DC72E631D5475A /* libPods-UITextView_placeHolder.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-UITextView_placeHolder.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B8CA0AEF5D65CC44592F0EB6 /* Pods-UITextView_placeHolder.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UITextView_placeHolder.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-UITextView_placeHolder/Pods-UITextView_placeHolder.debug.xcconfig"; sourceTree = "<group>"; };
 		F52845501EBE320E00D1CC3D /* UITextView_placeHolder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UITextView_placeHolder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F52845541EBE320E00D1CC3D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		F52845561EBE320E00D1CC3D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -66,6 +70,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B5E3B841B13D8E1AA1C05520 /* libPods-UITextView_placeHolder.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,6 +91,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		09A22B8769A13856B0F9C7F8 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				B8CA0AEF5D65CC44592F0EB6 /* Pods-UITextView_placeHolder.debug.xcconfig */,
+				0657E5BAA8E5B9A5E223561E /* Pods-UITextView_placeHolder.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		9E10548931115C25B57385BE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7C4DEF3567DC72E631D5475A /* libPods-UITextView_placeHolder.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		F52845471EBE320E00D1CC3D = {
 			isa = PBXGroup;
 			children = (
@@ -93,6 +115,8 @@
 				F528456F1EBE320E00D1CC3D /* UITextView_placeHolderTests */,
 				F528457A1EBE320E00D1CC3D /* UITextView_placeHolderUITests */,
 				F52845511EBE320E00D1CC3D /* Products */,
+				09A22B8769A13856B0F9C7F8 /* Pods */,
+				9E10548931115C25B57385BE /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -160,9 +184,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F52845801EBE320E00D1CC3D /* Build configuration list for PBXNativeTarget "UITextView_placeHolder" */;
 			buildPhases = (
+				9E6536750EB07E3CE9B6CD15 /* [CP] Check Pods Manifest.lock */,
 				F528454C1EBE320E00D1CC3D /* Sources */,
 				F528454D1EBE320E00D1CC3D /* Frameworks */,
 				F528454E1EBE320E00D1CC3D /* Resources */,
+				7B6380F2EE2C62E9E8AA257A /* [CP] Embed Pods Frameworks */,
+				5E7CD2C1A3B0F40C0D6FE013 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -281,6 +308,54 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		5E7CD2C1A3B0F40C0D6FE013 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-UITextView_placeHolder/Pods-UITextView_placeHolder-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		7B6380F2EE2C62E9E8AA257A /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-UITextView_placeHolder/Pods-UITextView_placeHolder-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9E6536750EB07E3CE9B6CD15 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		F528454C1EBE320E00D1CC3D /* Sources */ = {
@@ -439,6 +514,7 @@
 		};
 		F52845811EBE320E00D1CC3D /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B8CA0AEF5D65CC44592F0EB6 /* Pods-UITextView_placeHolder.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = G4MUNEEJKB;
@@ -451,6 +527,7 @@
 		};
 		F52845821EBE320E00D1CC3D /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0657E5BAA8E5B9A5E223561E /* Pods-UITextView_placeHolder.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = G4MUNEEJKB;
