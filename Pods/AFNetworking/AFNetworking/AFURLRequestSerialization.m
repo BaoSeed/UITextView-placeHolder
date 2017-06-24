@@ -32,6 +32,9 @@ NSString * const AFNetworkingOperationFailingURLRequestErrorKey = @"com.alamofir
 
 typedef NSString * (^AFQueryStringSerializationBlock)(NSURLRequest *request, id parameters, NSError *__autoreleasing *error);
 
+
+
+
 /**
  Returns a percent-escaped string following RFC 3986 for a query string key or value.
  RFC 3986 states that the following characters are "reserved" characters.
@@ -45,7 +48,10 @@ typedef NSString * (^AFQueryStringSerializationBlock)(NSURLRequest *request, id 
     - returns: The percent-escaped string.
  */
 static NSString * AFPercentEscapedStringFromString(NSString *string) {
+    
+    
     static NSString * const kAFCharactersGeneralDelimitersToEncode = @":#[]@"; // does not include "?" or "/" due to RFC 3986 - Section 3.4
+    
     static NSString * const kAFCharactersSubDelimitersToEncode = @"!$&'()*+,;=";
 
     NSMutableCharacterSet * allowedCharacterSet = [[NSCharacterSet URLQueryAllowedCharacterSet] mutableCopy];
@@ -60,6 +66,8 @@ static NSString * AFPercentEscapedStringFromString(NSString *string) {
     NSMutableString *escaped = @"".mutableCopy;
 
     while (index < string.length) {
+        
+        
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wgnu"
         NSUInteger length = MIN(string.length - index, batchSize);
@@ -78,6 +86,8 @@ static NSString * AFPercentEscapedStringFromString(NSString *string) {
 
 	return escaped;
 }
+
+
 
 #pragma mark -
 
@@ -105,14 +115,21 @@ static NSString * AFPercentEscapedStringFromString(NSString *string) {
 }
 
 - (NSString *)URLEncodedStringValue {
+    
     if (!self.value || [self.value isEqual:[NSNull null]]) {
+        
         return AFPercentEscapedStringFromString([self.field description]);
+        
     } else {
+        
         return [NSString stringWithFormat:@"%@=%@", AFPercentEscapedStringFromString([self.field description]), AFPercentEscapedStringFromString([self.value description])];
     }
 }
 
 @end
+
+
+
 
 #pragma mark -
 
@@ -134,34 +151,53 @@ static NSString * AFQueryStringFromParameters(NSDictionary *parameters) {
 }
 
 NSArray * AFQueryStringPairsFromDictionary(NSDictionary *dictionary) {
+    
+    
     return AFQueryStringPairsFromKeyAndValue(nil, dictionary);
 }
 
 NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
+    
+    
     NSMutableArray *mutableQueryStringComponents = [NSMutableArray array];
 
     NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"description" ascending:YES selector:@selector(compare:)];
 
     if ([value isKindOfClass:[NSDictionary class]]) {
+        
+        
         NSDictionary *dictionary = value;
+        
         // Sort dictionary keys to ensure consistent ordering in query string, which is important when deserializing potentially ambiguous sequences, such as an array of dictionaries
         for (id nestedKey in [dictionary.allKeys sortedArrayUsingDescriptors:@[ sortDescriptor ]]) {
+            
             id nestedValue = dictionary[nestedKey];
             if (nestedValue) {
+                
                 [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValue((key ? [NSString stringWithFormat:@"%@[%@]", key, nestedKey] : nestedKey), nestedValue)];
             }
         }
+        
     } else if ([value isKindOfClass:[NSArray class]]) {
+        
+        
         NSArray *array = value;
         for (id nestedValue in array) {
+            
             [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValue([NSString stringWithFormat:@"%@[]", key], nestedValue)];
         }
+        
     } else if ([value isKindOfClass:[NSSet class]]) {
+        
         NSSet *set = value;
         for (id obj in [set sortedArrayUsingDescriptors:@[ sortDescriptor ]]) {
+            
             [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValue(key, obj)];
         }
-    } else {
+    }
+    
+    else {
+        
         [mutableQueryStringComponents addObject:[[AFQueryStringPair alloc] initWithField:key value:value]];
     }
 
