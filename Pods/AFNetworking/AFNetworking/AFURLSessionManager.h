@@ -149,6 +149,9 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (readonly, nonatomic, strong) NSArray <NSURLSessionDownloadTask *> *downloadTasks;
 
+
+
+
 ///-------------------------------
 /// @name Managing Callback Queues
 ///-------------------------------
@@ -162,6 +165,9 @@ NS_ASSUME_NONNULL_BEGIN
  The dispatch group for `completionBlock`. If `NULL` (default), a private dispatch group is used.
  */
 @property (nonatomic, strong, nullable) dispatch_group_t completionGroup;
+
+
+
 
 ///---------------------------------
 /// @name Working Around System Bugs

@@ -79,7 +79,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1304"
             endingLineNumber = "1304"
-            landmarkName = "-URLSession:dataTask:didReceiveResponse:completionHandler:"
+            landmarkName = "-URLSession:task:didCompleteWithError:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -95,7 +95,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1344"
             endingLineNumber = "1344"
-            landmarkName = "-URLSession:dataTask:didReceiveData:"
+            landmarkName = "-URLSession:dataTask:didBecomeDownloadTask:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -223,7 +223,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "833"
             endingLineNumber = "833"
-            landmarkName = "-tasksForKeyPath:"
+            landmarkName = "-uploadTasks"
             landmarkType = "7">
             <Locations>
                <Location
@@ -335,8 +335,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "100"
             endingLineNumber = "100"
-            landmarkName = "-init"
-            landmarkType = "7">
+            landmarkName = "@implementation AFHTTPResponseSerializer"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -367,7 +367,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "217"
             endingLineNumber = "217"
-            landmarkName = "-responseObjectForResponse:data:error:"
+            landmarkName = "-validateResponse:data:error:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
