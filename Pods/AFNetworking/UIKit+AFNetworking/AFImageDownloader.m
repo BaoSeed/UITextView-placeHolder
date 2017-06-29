@@ -203,15 +203,29 @@
                                                   withReceiptID:(nonnull NSUUID *)receiptID
                                                         success:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse  * _Nullable response, UIImage *responseObject))success
                                                         failure:(nullable void (^)(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, NSError *error))failure {
+    
+    
+    
+    
+    
     __block NSURLSessionDataTask *task = nil;
+    
+    
+    //串行同步任务
     dispatch_sync(self.synchronizationQueue, ^{
+        
         NSString *URLIdentifier = request.URL.absoluteString;
         if (URLIdentifier == nil) {
+            
             if (failure) {
+                
                 NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorBadURL userInfo:nil];
+                
                 dispatch_async(dispatch_get_main_queue(), ^{
+                    
                     failure(request, nil, error);
                 });
+                
             }
             return;
         }
@@ -232,20 +246,28 @@
 
         // 2) Attempt to load the image from the image cache if the cache policy allows it
         switch (request.cachePolicy) {
+                
             case NSURLRequestUseProtocolCachePolicy:
             case NSURLRequestReturnCacheDataElseLoad:
             case NSURLRequestReturnCacheDataDontLoad: {
+                
                 UIImage *cachedImage = [self.imageCache imageforRequest:request withAdditionalIdentifier:nil];
+                
                 if (cachedImage != nil) {
+                    
                     if (success) {
+                        
                         dispatch_async(dispatch_get_main_queue(), ^{
                             success(request, nil, cachedImage);
                         });
                     }
+                    
                     return;
                 }
+                
                 break;
             }
+                
             default:
                 break;
         }
@@ -319,6 +341,9 @@
 
         task = mergedTask.task;
     });
+    
+    
+    
     if (task) {
         return [[AFImageDownloadReceipt alloc] initWithReceiptID:receiptID task:task];
     } else {

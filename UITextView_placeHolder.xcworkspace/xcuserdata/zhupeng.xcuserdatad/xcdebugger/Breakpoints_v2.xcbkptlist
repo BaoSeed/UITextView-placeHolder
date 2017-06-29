@@ -78,9 +78,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1304"
-            endingLineNumber = "1304"
-            landmarkName = "-URLSession:task:didCompleteWithError:"
-            landmarkType = "7">
+            endingLineNumber = "1304">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -94,9 +92,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1344"
-            endingLineNumber = "1344"
-            landmarkName = "-URLSession:dataTask:didBecomeDownloadTask:"
-            landmarkType = "7">
+            endingLineNumber = "1344">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -110,9 +106,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1253"
-            endingLineNumber = "1253"
-            landmarkName = "-URLSession:task:needNewBodyStream:"
-            landmarkType = "7">
+            endingLineNumber = "1253">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -127,7 +121,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "752"
             endingLineNumber = "752"
-            landmarkName = "-addDelegateForDownloadTask:progress:destination:completionHandler:"
+            landmarkName = "-dataTaskWithRequest:completionHandler:"
             landmarkType = "7">
             <Locations>
                <Location
@@ -173,57 +167,9 @@
             timestampString = "519983187.043927"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "636"
-            endingLineNumber = "636"
-            landmarkName = "-initWithSessionConfiguration:"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[AFURLSessionManager initWithSessionConfiguration:]"
-                  moduleName = "UITextView_placeHolder"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/zhupeng/Documents/UITextView+PlaceHolder/Pods/AFNetworking/AFNetworking/AFURLSessionManager.m"
-                  timestampString = "519983188.11776"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "636"
-                  endingLineNumber = "636"
-                  offsetFromSymbolStart = "1151">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__52-[AFURLSessionManager initWithSessionConfiguration:]_block_invoke"
-                  moduleName = "UITextView_placeHolder"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/zhupeng/Documents/UITextView+PlaceHolder/Pods/AFNetworking/AFNetworking/AFURLSessionManager.m"
-                  timestampString = "519983188.121163"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "638"
-                  endingLineNumber = "638"
-                  offsetFromSymbolStart = "183">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Pods/AFNetworking/AFNetworking/AFURLSessionManager.m"
-            timestampString = "519983187.043927"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
             startingLineNumber = "833"
             endingLineNumber = "833"
-            landmarkName = "-uploadTasks"
+            landmarkName = "-downloadTaskWithRequest:progress:destination:completionHandler:"
             landmarkType = "7">
             <Locations>
                <Location
@@ -313,22 +259,6 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Pods/AFNetworking/AFNetworking/AFURLSessionManager.m"
-            timestampString = "519983187.043927"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "638"
-            endingLineNumber = "638"
-            landmarkName = "-initWithSessionConfiguration:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "Pods/AFNetworking/AFNetworking/AFURLResponseSerialization.m"
             timestampString = "519983067.386997"
             startingColumnNumber = "9223372036854775807"
@@ -399,7 +329,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "331"
             endingLineNumber = "331"
-            landmarkName = "-URLSession:task:didCompleteWithError:"
+            landmarkName = "-URLSession:downloadTask:didFinishDownloadingToURL:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

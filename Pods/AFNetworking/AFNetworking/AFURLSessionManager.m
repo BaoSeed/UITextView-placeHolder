@@ -519,11 +519,11 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     }
 
     self.sessionConfiguration = configuration;
-
+    
     self.operationQueue = [[NSOperationQueue alloc] init];
     self.operationQueue.maxConcurrentOperationCount = 1;
 
-    self.session = [NSURLSession sessionWithConfiguration:self.sessionConfiguration delegate:self delegateQueue:self.operationQueue];
+    self.session        = [NSURLSession sessionWithConfiguration:self.sessionConfiguration delegate:self delegateQueue:self.operationQueue];
 
     self.responseSerializer = [AFJSONResponseSerializer serializer];
 
@@ -538,6 +538,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     self.lock = [[NSLock alloc] init];
     self.lock.name = AFURLSessionManagerLockName;
 
+    
     [self.session getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
         for (NSURLSessionDataTask *task in dataTasks) {
             [self addDelegateForDataTask:task uploadProgress:nil downloadProgress:nil completionHandler:nil];
@@ -559,7 +560,11 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-#pragma mark -
+
+
+
+#pragma mark - AFNetworking TaskDidResumeNotification
+#pragma mark - AFNetworking TaskDidResumeNotification
 
 - (NSString *)taskDescriptionForSessionTasks {
     return [NSString stringWithFormat:@"%p", self];
@@ -587,7 +592,9 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     }
 }
 
-#pragma mark -
+
+
+#pragma mark - AFURLSessionManagerTaskDelegate
 
 - (AFURLSessionManagerTaskDelegate *)delegateForTask:(NSURLSessionTask *)task {
     NSParameterAssert(task);
@@ -677,7 +684,10 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     [self.lock unlock];
 }
 
-#pragma mark -
+
+
+
+#pragma mark -  tasks
 
 - (NSArray *)tasksForKeyPath:(NSString *)keyPath {
     __block NSArray *tasks = nil;
@@ -717,9 +727,13 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     return [self tasksForKeyPath:NSStringFromSelector(_cmd)];
 }
 
-#pragma mark -
+
+
+
+#pragma mark - session invalidateAndCancel
 
 - (void)invalidateSessionCancelingTasks:(BOOL)cancelPendingTasks {
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         if (cancelPendingTasks) {
             [self.session invalidateAndCancel];
@@ -729,6 +743,9 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     });
 }
 
+
+
+
 #pragma mark -
 
 - (void)setResponseSerializer:(id <AFURLResponseSerialization>)responseSerializer {
@@ -736,6 +753,9 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 
     _responseSerializer = responseSerializer;
 }
+
+
+
 
 #pragma mark -
 - (void)addNotificationObserverForTask:(NSURLSessionTask *)task {
@@ -748,7 +768,10 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     [[NSNotificationCenter defaultCenter] removeObserver:self name:AFNSURLSessionTaskDidResumeNotification object:task];
 }
 
-#pragma mark -
+
+
+
+#pragma mark - NSURLSessionDataTask
 
 - (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request
                             completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler
@@ -855,7 +878,12 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     return downloadTask;
 }
 
-#pragma mark -
+
+
+
+
+#pragma mark - ProgressForTask
+
 - (NSProgress *)uploadProgressForTask:(NSURLSessionTask *)task {
     return [[self delegateForTask:task] uploadProgress];
 }
@@ -864,7 +892,10 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     return [[self delegateForTask:task] downloadProgress];
 }
 
-#pragma mark -
+
+
+
+#pragma mark - Block Setttings
 
 - (void)setSessionDidBecomeInvalidBlock:(void (^)(NSURLSession *session, NSError *error))block {
     self.sessionDidBecomeInvalid = block;
@@ -932,7 +963,10 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     self.downloadTaskDidResume = block;
 }
 
-#pragma mark - NSObject
+
+
+
+#pragma mark - NSObject override
 
 - (NSString *)description {
     return [NSString stringWithFormat:@"<%@: %p, session: %@, operationQueue: %@>", NSStringFromClass([self class]), self, self.session, self.operationQueue];
@@ -951,6 +985,10 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 
     return [[self class] instancesRespondToSelector:selector];
 }
+
+
+
+
 
 #pragma mark - NSURLSessionDelegate
 
@@ -1213,6 +1251,10 @@ expectedTotalBytes:(int64_t)expectedTotalBytes
         self.downloadTaskDidResume(session, downloadTask, fileOffset, expectedTotalBytes);
     }
 }
+
+
+
+
 
 #pragma mark - NSSecureCoding
 

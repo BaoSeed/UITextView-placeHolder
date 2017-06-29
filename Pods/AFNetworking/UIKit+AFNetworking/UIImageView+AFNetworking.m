@@ -163,6 +163,7 @@
         //去下载，并得到一个receipt，可以用来取消回调
         AFImageDownloadReceipt *receipt;
         
+        //串行同步任务创建task
         receipt = [downloader
                    downloadImageForURLRequest:urlRequest
                    withReceiptID:downloadID
@@ -210,7 +211,6 @@
         
          //赋值
         self.af_activeImageDownloadReceipt = receipt;
-        
         
     }
 }

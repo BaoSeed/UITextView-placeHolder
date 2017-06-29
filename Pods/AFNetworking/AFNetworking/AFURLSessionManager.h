@@ -38,6 +38,9 @@
 
  ## NSURLSession & NSURLSessionTask Delegate Methods
 
+ 
+ 
+ 
  `AFURLSessionManager` implements the following delegate methods:
 
  ### `NSURLSessionDelegate`
@@ -67,16 +70,24 @@
  - `URLSession:downloadTask:didWriteData:totalBytesWritten:totalBytesWritten:totalBytesExpectedToWrite:`
  - `URLSession:downloadTask:didResumeAtOffset:expectedTotalBytes:`
 
+ 
+ 
+ 
  If any of these methods are overridden in a subclass, they _must_ call the `super` implementation first.
 
  ## Network Reachability Monitoring
 
  Network reachability status and change monitoring is available through the `reachabilityManager` property. Applications may choose to monitor network reachability conditions in order to prevent or suspend any outbound requests. See `AFNetworkReachabilityManager` for more details.
 
+ 
+ 
  ## NSCoding Caveats
 
  - Encoded managers do not include any block properties. Be sure to set delegate callback blocks when using `-initWithCoder:` or `NSKeyedUnarchiver`.
 
+ 
+ 
+ 
  ## NSCopying Caveats
 
  - `-copy` and `-copyWithZone:` return a new manager with a new `NSURLSession` created from the configuration of the original.
@@ -99,12 +110,34 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (readonly, nonatomic, strong) NSOperationQueue *operationQueue;
 
+
+///-------------------------------
+/// @name Managing Callback Queues
+///-------------------------------
+
+
+/**
+ The dispatch queue for `completionBlock`. If `NULL` (default), the main queue is used.
+ */
+@property (nonatomic, strong, nullable) dispatch_queue_t completionQueue;
+
+/**
+ The dispatch group for `completionBlock`. If `NULL` (default), a private dispatch group is used.
+ */
+@property (nonatomic, strong, nullable) dispatch_group_t completionGroup;
+
+
+
+
 /**
  Responses sent from the server in data tasks created with `dataTaskWithRequest:success:failure:` and run using the `GET` / `POST` / et al. convenience methods are automatically validated and serialized by the response serializer. By default, this property is set to an instance of `AFJSONResponseSerializer`.
 
  @warning `responseSerializer` must not be `nil`.
  */
 @property (nonatomic, strong) id <AFURLResponseSerialization> responseSerializer;
+
+
+
 
 ///-------------------------------
 /// @name Managing Security Policy
@@ -114,6 +147,9 @@ NS_ASSUME_NONNULL_BEGIN
  The security policy used by created session to evaluate server trust for secure connections. `AFURLSessionManager` uses the `defaultPolicy` unless otherwise specified.
  */
 @property (nonatomic, strong) AFSecurityPolicy *securityPolicy;
+
+
+
 
 #if !TARGET_OS_WATCH
 ///--------------------------------------
@@ -125,6 +161,9 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (readwrite, nonatomic, strong) AFNetworkReachabilityManager *reachabilityManager;
 #endif
+
+
+
 
 ///----------------------------
 /// @name Getting Session Tasks
@@ -150,19 +189,9 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (readonly, nonatomic, strong) NSArray <NSURLSessionDownloadTask *> *downloadTasks;
 
-///-------------------------------
-/// @name Managing Callback Queues
-///-------------------------------
 
-/**
- The dispatch queue for `completionBlock`. If `NULL` (default), the main queue is used.
- */
-@property (nonatomic, strong, nullable) dispatch_queue_t completionQueue;
 
-/**
- The dispatch group for `completionBlock`. If `NULL` (default), a private dispatch group is used.
- */
-@property (nonatomic, strong, nullable) dispatch_group_t completionGroup;
+
 
 ///---------------------------------
 /// @name Working Around System Bugs
@@ -176,6 +205,9 @@ NS_ASSUME_NONNULL_BEGIN
  @see https://github.com/AFNetworking/AFNetworking/issues/1675
  */
 @property (nonatomic, assign) BOOL attemptsToRecreateUploadTasksForBackgroundSessions;
+
+
+
 
 ///---------------------
 /// @name Initialization
@@ -196,6 +228,11 @@ NS_ASSUME_NONNULL_BEGIN
  @param cancelPendingTasks Whether or not to cancel pending tasks.
  */
 - (void)invalidateSessionCancelingTasks:(BOOL)cancelPendingTasks;
+
+
+
+
+
 
 ///-------------------------
 /// @name Running Data Tasks

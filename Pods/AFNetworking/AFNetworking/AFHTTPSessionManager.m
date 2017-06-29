@@ -61,7 +61,7 @@
 
 - (instancetype)initWithSessionConfiguration:(NSURLSessionConfiguration *)configuration {
     return [self initWithBaseURL:nil sessionConfiguration:configuration];
-}
+}NSURLConnection
 
 - (instancetype)initWithBaseURL:(NSURL *)url
            sessionConfiguration:(NSURLSessionConfiguration *)configuration
