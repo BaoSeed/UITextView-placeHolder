@@ -1,5 +1,5 @@
 // AFURLRequestSerialization.m
-// Copyright (c) 2011–2015 Alamofire Software Foundation (http://alamofire.org/)
+// Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,9 +32,6 @@ NSString * const AFNetworkingOperationFailingURLRequestErrorKey = @"com.alamofir
 
 typedef NSString * (^AFQueryStringSerializationBlock)(NSURLRequest *request, id parameters, NSError *__autoreleasing *error);
 
-
-
-
 /**
  Returns a percent-escaped string following RFC 3986 for a query string key or value.
  RFC 3986 states that the following characters are "reserved" characters.
@@ -47,11 +44,8 @@ typedef NSString * (^AFQueryStringSerializationBlock)(NSURLRequest *request, id 
     - parameter string: The string to be percent-escaped.
     - returns: The percent-escaped string.
  */
-static NSString * AFPercentEscapedStringFromString(NSString *string) {
-    
-    
+NSString * AFPercentEscapedStringFromString(NSString *string) {
     static NSString * const kAFCharactersGeneralDelimitersToEncode = @":#[]@"; // does not include "?" or "/" due to RFC 3986 - Section 3.4
-    
     static NSString * const kAFCharactersSubDelimitersToEncode = @"!$&'()*+,;=";
 
     NSMutableCharacterSet * allowedCharacterSet = [[NSCharacterSet URLQueryAllowedCharacterSet] mutableCopy];
@@ -66,8 +60,6 @@ static NSString * AFPercentEscapedStringFromString(NSString *string) {
     NSMutableString *escaped = @"".mutableCopy;
 
     while (index < string.length) {
-        
-        
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wgnu"
         NSUInteger length = MIN(string.length - index, batchSize);
@@ -86,8 +78,6 @@ static NSString * AFPercentEscapedStringFromString(NSString *string) {
 
 	return escaped;
 }
-
-
 
 #pragma mark -
 
@@ -115,35 +105,23 @@ static NSString * AFPercentEscapedStringFromString(NSString *string) {
 }
 
 - (NSString *)URLEncodedStringValue {
-    
     if (!self.value || [self.value isEqual:[NSNull null]]) {
-        
         return AFPercentEscapedStringFromString([self.field description]);
-        
     } else {
-        
         return [NSString stringWithFormat:@"%@=%@", AFPercentEscapedStringFromString([self.field description]), AFPercentEscapedStringFromString([self.value description])];
     }
 }
 
 @end
 
-
-
-
 #pragma mark -
 
 FOUNDATION_EXPORT NSArray * AFQueryStringPairsFromDictionary(NSDictionary *dictionary);
 FOUNDATION_EXPORT NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value);
 
-
-
-static NSString * AFQueryStringFromParameters(NSDictionary *parameters) {
-    
+NSString * AFQueryStringFromParameters(NSDictionary *parameters) {
     NSMutableArray *mutablePairs = [NSMutableArray array];
-    
     for (AFQueryStringPair *pair in AFQueryStringPairsFromDictionary(parameters)) {
-        
         [mutablePairs addObject:[pair URLEncodedStringValue]];
     }
 
@@ -151,62 +129,39 @@ static NSString * AFQueryStringFromParameters(NSDictionary *parameters) {
 }
 
 NSArray * AFQueryStringPairsFromDictionary(NSDictionary *dictionary) {
-    
-    
     return AFQueryStringPairsFromKeyAndValue(nil, dictionary);
 }
 
 NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
-    
-    
     NSMutableArray *mutableQueryStringComponents = [NSMutableArray array];
 
     NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"description" ascending:YES selector:@selector(compare:)];
 
     if ([value isKindOfClass:[NSDictionary class]]) {
-        
-        
         NSDictionary *dictionary = value;
-        
         // Sort dictionary keys to ensure consistent ordering in query string, which is important when deserializing potentially ambiguous sequences, such as an array of dictionaries
         for (id nestedKey in [dictionary.allKeys sortedArrayUsingDescriptors:@[ sortDescriptor ]]) {
-            
             id nestedValue = dictionary[nestedKey];
             if (nestedValue) {
-                
                 [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValue((key ? [NSString stringWithFormat:@"%@[%@]", key, nestedKey] : nestedKey), nestedValue)];
             }
         }
-        
     } else if ([value isKindOfClass:[NSArray class]]) {
-        
-        
         NSArray *array = value;
         for (id nestedValue in array) {
-            
             [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValue([NSString stringWithFormat:@"%@[]", key], nestedValue)];
         }
-        
     } else if ([value isKindOfClass:[NSSet class]]) {
-        
         NSSet *set = value;
         for (id obj in [set sortedArrayUsingDescriptors:@[ sortDescriptor ]]) {
-            
             [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValue(key, obj)];
         }
-    }
-    
-    else {
-        
+    } else {
         [mutableQueryStringComponents addObject:[[AFQueryStringPair alloc] initWithField:key value:value]];
     }
 
     return mutableQueryStringComponents;
 }
-
-
-
-
 
 #pragma mark -
 
@@ -223,21 +178,9 @@ static NSArray * AFHTTPRequestSerializerObservedKeyPaths() {
     static NSArray *_AFHTTPRequestSerializerObservedKeyPaths = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        
-        
-        _AFHTTPRequestSerializerObservedKeyPaths =
-        
-          @[
-              NSStringFromSelector(@selector(allowsCellularAccess)),
-              NSStringFromSelector(@selector(cachePolicy)),
-              NSStringFromSelector(@selector(HTTPShouldHandleCookies)),
-              NSStringFromSelector(@selector(HTTPShouldUsePipelining)),
-              NSStringFromSelector(@selector(networkServiceType)),
-              NSStringFromSelector(@selector(timeoutInterval))
-         ];
-                
+        _AFHTTPRequestSerializerObservedKeyPaths = @[NSStringFromSelector(@selector(allowsCellularAccess)), NSStringFromSelector(@selector(cachePolicy)), NSStringFromSelector(@selector(HTTPShouldHandleCookies)), NSStringFromSelector(@selector(HTTPShouldUsePipelining)), NSStringFromSelector(@selector(networkServiceType)), NSStringFromSelector(@selector(timeoutInterval))];
     });
-    
+
     return _AFHTTPRequestSerializerObservedKeyPaths;
 }
 
@@ -257,7 +200,6 @@ static void *AFHTTPRequestSerializerObserverContext = &AFHTTPRequestSerializerOb
 }
 
 - (instancetype)init {
-    
     self = [super init];
     if (!self) {
         return nil;
@@ -270,39 +212,26 @@ static void *AFHTTPRequestSerializerObserverContext = &AFHTTPRequestSerializerOb
     // Accept-Language HTTP Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4
     NSMutableArray *acceptLanguagesComponents = [NSMutableArray array];
     [[NSLocale preferredLanguages] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        
         float q = 1.0f - (idx * 0.1f);
         [acceptLanguagesComponents addObject:[NSString stringWithFormat:@"%@;q=%0.1g", obj, q]];
-        
         *stop = q <= 0.5f;
     }];
-    
-    
     [self setValue:[acceptLanguagesComponents componentsJoinedByString:@", "] forHTTPHeaderField:@"Accept-Language"];
 
-    
     NSString *userAgent = nil;
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu"
-    
 #if TARGET_OS_IOS
-    
     // User-Agent Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.43
     userAgent = [NSString stringWithFormat:@"%@/%@ (%@; iOS %@; Scale/%0.2f)", [[NSBundle mainBundle] infoDictionary][(__bridge NSString *)kCFBundleExecutableKey] ?: [[NSBundle mainBundle] infoDictionary][(__bridge NSString *)kCFBundleIdentifierKey], [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"] ?: [[NSBundle mainBundle] infoDictionary][(__bridge NSString *)kCFBundleVersionKey], [[UIDevice currentDevice] model], [[UIDevice currentDevice] systemVersion], [[UIScreen mainScreen] scale]];
-    
 #elif TARGET_OS_WATCH
     // User-Agent Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.43
-    userAgent = [NSString stringWithFormat:@"%@/%@ (%@; watchOS %@; Scale/%0.2f)", [[NSBundle mainBundle] infoDictionary][(__bridge NSString *)kCFBundleExecutableKey] ?: [[NSBundle mainBundle] infoDictionary][(__bridge NSString *)kCFBundleIdentifierKey], [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"] ?: [[NSBundle mainBundle] infoDictionary][(__bridge NSString *)kCFBundleVersio
-                                                                                                                                                                                                                                                                                                                                                                               nKey], [[WKInterfaceDevice currentDevice] model], [[WKInterfaceDevice currentDevice] systemVersion], [[WKInterfaceDevice currentDevice] screenScale]];
+    userAgent = [NSString stringWithFormat:@"%@/%@ (%@; watchOS %@; Scale/%0.2f)", [[NSBundle mainBundle] infoDictionary][(__bridge NSString *)kCFBundleExecutableKey] ?: [[NSBundle mainBundle] infoDictionary][(__bridge NSString *)kCFBundleIdentifierKey], [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"] ?: [[NSBundle mainBundle] infoDictionary][(__bridge NSString *)kCFBundleVersionKey], [[WKInterfaceDevice currentDevice] model], [[WKInterfaceDevice currentDevice] systemVersion], [[WKInterfaceDevice currentDevice] screenScale]];
 #elif defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
     userAgent = [NSString stringWithFormat:@"%@/%@ (Mac OS X %@)", [[NSBundle mainBundle] infoDictionary][(__bridge NSString *)kCFBundleExecutableKey] ?: [[NSBundle mainBundle] infoDictionary][(__bridge NSString *)kCFBundleIdentifierKey], [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"] ?: [[NSBundle mainBundle] infoDictionary][(__bridge NSString *)kCFBundleVersionKey], [[NSProcessInfo processInfo] operatingSystemVersionString]];
 #endif
 #pragma clang diagnostic pop
-    
-    
-    
     if (userAgent) {
-        
         if (![userAgent canBeConvertedToEncoding:NSASCIIStringEncoding]) {
             NSMutableString *mutableUserAgent = [userAgent mutableCopy];
             if (CFStringTransform((__bridge CFMutableStringRef)(mutableUserAgent), NULL, (__bridge CFStringRef)@"Any-Latin; Latin-ASCII; [:^ASCII:] Remove", false)) {
@@ -315,13 +244,9 @@ static void *AFHTTPRequestSerializerObserverContext = &AFHTTPRequestSerializerOb
     // HTTP Method Definitions; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
     self.HTTPMethodsEncodingParametersInURI = [NSSet setWithObjects:@"GET", @"HEAD", @"DELETE", nil];
 
-    
-    
     self.mutableObservedChangedKeyPaths = [NSMutableSet set];
     for (NSString *keyPath in AFHTTPRequestSerializerObservedKeyPaths()) {
-        
         if ([self respondsToSelector:NSSelectorFromString(keyPath)]) {
-            
             [self addObserver:self forKeyPath:keyPath options:NSKeyValueObservingOptionNew context:AFHTTPRequestSerializerObserverContext];
         }
     }
@@ -417,12 +342,7 @@ forHTTPHeaderField:(NSString *)field
     self.queryStringSerialization = block;
 }
 
-
-
-
-
-
-#pragma mark -  NSMutableURLRequest
+#pragma mark -
 
 - (NSMutableURLRequest *)requestWithMethod:(NSString *)method
                                  URLString:(NSString *)URLString
@@ -440,19 +360,12 @@ forHTTPHeaderField:(NSString *)field
     mutableRequest.HTTPMethod = method;
 
     for (NSString *keyPath in AFHTTPRequestSerializerObservedKeyPaths()) {
-        
         if ([self.mutableObservedChangedKeyPaths containsObject:keyPath]) {
-            
             [mutableRequest setValue:[self valueForKeyPath:keyPath] forKey:keyPath];
         }
     }
-    
 
-    mutableRequest =
-    
-       [[self requestBySerializingRequest:mutableRequest
-                           withParameters:parameters
-                                    error:error] mutableCopy];
+    mutableRequest = [[self requestBySerializingRequest:mutableRequest withParameters:parameters error:error] mutableCopy];
 
 	return mutableRequest;
 }
@@ -548,10 +461,6 @@ forHTTPHeaderField:(NSString *)field
     return mutableRequest;
 }
 
-
-
-
-
 #pragma mark - AFURLRequestSerialization
 
 - (NSURLRequest *)requestBySerializingRequest:(NSURLRequest *)request
@@ -562,94 +471,51 @@ forHTTPHeaderField:(NSString *)field
 
     NSMutableURLRequest *mutableRequest = [request mutableCopy];
 
-    //1、从自己的head里去遍历，如果有值则设置给request的head
     [self.HTTPRequestHeaders enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) {
-        
         if (![request valueForHTTPHeaderField:field]) {
-            
             [mutableRequest setValue:value forHTTPHeaderField:field];
         }
     }];
 
-    
-    //2、来把各种类型的参数，array dic set转化成字符串，给request
     NSString *query = nil;
     if (parameters) {
-        
-        //2.1 自定义的解析方式
         if (self.queryStringSerialization) {
-            
             NSError *serializationError;
-            
             query = self.queryStringSerialization(request, parameters, &serializationError);
 
             if (serializationError) {
-                
                 if (error) {
                     *error = serializationError;
                 }
 
                 return nil;
             }
-            
-        }
-        
-        //2.2 默认解析方式
-        else {
-            
+        } else {
             switch (self.queryStringSerializationStyle) {
-                    
                 case AFHTTPRequestQueryStringDefaultStyle:
-                    
                     query = AFQueryStringFromParameters(parameters);
-                    
                     break;
             }
         }
     }
 
-    
-    
-    //3、最后判断该request中是否包含了GET、HEAD、DELETE（都包含在HTTPMethodsEncodingParametersInURI）。
-    
-    
-     //因为这几个method的quey是拼接到url后面的。
     if ([self.HTTPMethodsEncodingParametersInURI containsObject:[[request HTTPMethod] uppercaseString]]) {
-        
-        
-        if (query) {
-            
+        if (query && query.length > 0) {
             mutableRequest.URL = [NSURL URLWithString:[[mutableRequest.URL absoluteString] stringByAppendingFormat:mutableRequest.URL.query ? @"&%@" : @"?%@", query]];
         }
-        
-    }
-    
-    
-    //而POST、PUT是把query拼接到http body中的
-    else {
-        
+    } else {
         // #2864: an empty string is a valid x-www-form-urlencoded payload
         if (!query) {
             query = @"";
         }
-        
         if (![mutableRequest valueForHTTPHeaderField:@"Content-Type"]) {
-            
             [mutableRequest setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
         }
-        
         [mutableRequest setHTTPBody:[query dataUsingEncoding:self.stringEncoding]];
     }
 
     return mutableRequest;
 }
-
-
-
-
-
-
-
 
 #pragma mark - NSKeyValueObserving
 
@@ -667,22 +533,13 @@ forHTTPHeaderField:(NSString *)field
                        context:(void *)context
 {
     if (context == AFHTTPRequestSerializerObserverContext) {
-        
         if ([change[NSKeyValueChangeNewKey] isEqual:[NSNull null]]) {
-            
             [self.mutableObservedChangedKeyPaths removeObject:keyPath];
-            
         } else {
-            
             [self.mutableObservedChangedKeyPaths addObject:keyPath];
         }
     }
 }
-
-
-
-
-
 
 #pragma mark - NSSecureCoding
 

@@ -1,5 +1,5 @@
 // AFAutoPurgingImageCache.h
-// Copyright (c) 2011–2015 Alamofire Software Foundation (http://alamofire.org/)
+// Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,9 @@
 #import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
+
+
+
 
 /**
  The `AFImageCache` protocol defines a set of APIs for adding, removing and fetching images from a cache synchronously.
@@ -67,6 +70,8 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 
+
+
 /**
  The `ImageRequestCache` protocol extends the `ImageCache` protocol by adding methods for adding, removing and fetching images from a cache given an `NSURLRequest` and additional identifier.
  */
@@ -103,6 +108,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+
+
+
+
+
+
 /**
  The `AutoPurgingImageCache` in an in-memory image cache used to store images up to a given memory capacity. When the memory capacity is reached, the image cache is sorted by last access date, then the oldest image is continuously purged until the preferred memory usage after purge is met. Each time an image is accessed through the cache, the internal access date of the image is updated.
  */
@@ -135,7 +146,7 @@ NS_ASSUME_NONNULL_BEGIN
  after purge limit.
 
  @param memoryCapacity The total memory capacity of the cache in bytes.
- @param preferredMemoryUsageAfterPurge The preferred memory usage after purge in bytes.
+ @param preferredMemoryCapacity The preferred memory usage after purge in bytes.
 
  @return The new `AutoPurgingImageCache` instance.
  */
@@ -146,4 +157,8 @@ NS_ASSUME_NONNULL_BEGIN
 NS_ASSUME_NONNULL_END
 
 #endif
+
+
+
+
 

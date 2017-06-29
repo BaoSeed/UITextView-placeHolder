@@ -9,7 +9,7 @@ target "UITextView_placeHolder"  do
  # pod 'Realm',   '~>2.4.3'
  # pod 'Realm/Headers'
   
-  pod 'AFNetworking', '~>3.0.0'
+  pod 'AFNetworking', '~>3.1.0'
   
 
 end

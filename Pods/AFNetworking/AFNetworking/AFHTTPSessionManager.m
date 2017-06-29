@@ -1,5 +1,5 @@
 // AFHTTPSessionManager.m
-// Copyright (c) 2011–2015 Alamofire Software Foundation (http://alamofire.org/)
+// Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -78,15 +78,11 @@
 
     self.baseURL = url;
 
-    self.requestSerializer  = [AFHTTPRequestSerializer serializer];
+    self.requestSerializer = [AFHTTPRequestSerializer serializer];
     self.responseSerializer = [AFJSONResponseSerializer serializer];
 
     return self;
 }
-
-
-
-
 
 #pragma mark -
 
@@ -101,9 +97,6 @@
 
     [super setResponseSerializer:responseSerializer];
 }
-
-
-
 
 #pragma mark -
 
@@ -266,33 +259,20 @@
                                          failure:(void (^)(NSURLSessionDataTask *, NSError *))failure
 {
     NSError *serializationError = nil;
-    
-    NSMutableURLRequest *request =
-    
-         [self.requestSerializer requestWithMethod:method
-                                         URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString]
-                                        parameters:parameters
-                                             error:&serializationError];
-    
-    
+    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:method URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters error:&serializationError];
     if (serializationError) {
-        
         if (failure) {
-            
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu"
             dispatch_async(self.completionQueue ?: dispatch_get_main_queue(), ^{
                 failure(nil, serializationError);
             });
-            
 #pragma clang diagnostic pop
         }
 
         return nil;
     }
 
-    
-    
     __block NSURLSessionDataTask *dataTask = nil;
     dataTask = [self dataTaskWithRequest:request
                           uploadProgress:uploadProgress
@@ -311,12 +291,6 @@
 
     return dataTask;
 }
-
-
-
-
-
-
 
 #pragma mark - NSObject
 

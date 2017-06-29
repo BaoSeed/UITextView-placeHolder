@@ -1,5 +1,5 @@
 // AFURLResponseSerialization.m
-// Copyright (c) 2011–2015 Alamofire Software Foundation (http://alamofire.org/)
+// Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -61,33 +61,20 @@ static BOOL AFErrorOrUnderlyingErrorHasCodeInDomain(NSError *error, NSInteger co
 }
 
 static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingOptions readingOptions) {
-    
     if ([JSONObject isKindOfClass:[NSArray class]]) {
-        
         NSMutableArray *mutableArray = [NSMutableArray arrayWithCapacity:[(NSArray *)JSONObject count]];
-        
         for (id value in (NSArray *)JSONObject) {
-            
             [mutableArray addObject:AFJSONObjectByRemovingKeysWithNullValues(value, readingOptions)];
         }
 
         return (readingOptions & NSJSONReadingMutableContainers) ? mutableArray : [NSArray arrayWithArray:mutableArray];
-        
     } else if ([JSONObject isKindOfClass:[NSDictionary class]]) {
-        
         NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionaryWithDictionary:JSONObject];
-        
         for (id <NSCopying> key in [(NSDictionary *)JSONObject allKeys]) {
-            
             id value = (NSDictionary *)JSONObject[key];
-            
             if (!value || [value isEqual:[NSNull null]]) {
-                
                 [mutableDictionary removeObjectForKey:key];
-                
-            } else if ([value isKindOfClass:[NSArray class]] ||
-                       [value isKindOfClass:[NSDictionary class]]) {
-                
+            } else if ([value isKindOfClass:[NSArray class]] || [value isKindOfClass:[NSDictionary class]]) {
                 mutableDictionary[key] = AFJSONObjectByRemovingKeysWithNullValues(value, readingOptions);
             }
         }
@@ -124,107 +111,50 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
                     data:(NSData *)data
                    error:(NSError * __autoreleasing *)error
 {
-    
-    //response是否合法标识
     BOOL responseIsValid = YES;
-    //验证的error
     NSError *validationError = nil;
 
-    
-    //如果存在且是NSHTTPURLResponse
     if (response && [response isKindOfClass:[NSHTTPURLResponse class]]) {
-        
-        
-        //主要判断自己能接受的数据类型和response的数据类型是否匹配，
-        //如果有接受数据类型，如果不匹配response，而且响应类型不为空，数据长度不为0
-        if (self.acceptableContentTypes &&
-            
-            ![self.acceptableContentTypes containsObject:[response MIMEType]]){
-            
-            //进入If块说明解析数据肯定是失败的，这时候要把解析错误信息放到error里。
-            //如果数据长度大于0，而且有响应url
+        if (self.acceptableContentTypes && ![self.acceptableContentTypes containsObject:[response MIMEType]] &&
+            !([response MIMEType] == nil && [data length] == 0)) {
+
             if ([data length] > 0 && [response URL]) {
-                
-                //错误信息字典，填充一些错误信息
-                NSMutableDictionary *mutableUserInfo =
-                
-                [@{
-                                                          
-                      NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Request failed: unacceptable content-type: %@", @"AFNetworking", nil), [response MIMEType]],
-                      
-                      NSURLErrorFailingURLErrorKey:[response URL],
-                      
-                      AFNetworkingOperationFailingURLResponseErrorKey: response,
-                      
-                    } mutableCopy];
-                
+                NSMutableDictionary *mutableUserInfo = [@{
+                                                          NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Request failed: unacceptable content-type: %@", @"AFNetworking", nil), [response MIMEType]],
+                                                          NSURLErrorFailingURLErrorKey:[response URL],
+                                                          AFNetworkingOperationFailingURLResponseErrorKey: response,
+                                                        } mutableCopy];
                 if (data) {
-                    
                     mutableUserInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] = data;
                 }
 
-                
-                //组合错误
-                validationError =
-                
-                AFErrorWithUnderlyingError(
-                                                             
-                        [NSError errorWithDomain:AFURLResponseSerializationErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:mutableUserInfo],
-                                           
-                        validationError
-                                );
-                
+                validationError = AFErrorWithUnderlyingError([NSError errorWithDomain:AFURLResponseSerializationErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:mutableUserInfo], validationError);
             }
-            
-            //返回标识
+
             responseIsValid = NO;
         }
 
-        
-        
-        //判断自己可接受的状态吗
-        //如果和response的状态码不匹配，则进入if块
-        if (self.acceptableStatusCodes &&
-            
-            ![self.acceptableStatusCodes containsIndex:(NSUInteger)response.statusCode] &&
-            
-            [response URL]) {
-            
-            //填写错误信息字典
-            NSMutableDictionary *mutableUserInfo =
-            
-            [@{
-               NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Request failed: %@ (%ld)", @"AFNetworking", nil), [NSHTTPURLResponse localizedStringForStatusCode:response.statusCode], (long)response.statusCode],
-               
-               NSURLErrorFailingURLErrorKey:[response URL],
-               
-               AFNetworkingOperationFailingURLResponseErrorKey: response,
-               
-             } mutableCopy];
+        if (self.acceptableStatusCodes && ![self.acceptableStatusCodes containsIndex:(NSUInteger)response.statusCode] && [response URL]) {
+            NSMutableDictionary *mutableUserInfo = [@{
+                                               NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Request failed: %@ (%ld)", @"AFNetworking", nil), [NSHTTPURLResponse localizedStringForStatusCode:response.statusCode], (long)response.statusCode],
+                                               NSURLErrorFailingURLErrorKey:[response URL],
+                                               AFNetworkingOperationFailingURLResponseErrorKey: response,
+                                       } mutableCopy];
 
-            
-            //data错误
             if (data) {
-                
                 mutableUserInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] = data;
             }
 
-            //组合错误
             validationError = AFErrorWithUnderlyingError([NSError errorWithDomain:AFURLResponseSerializationErrorDomain code:NSURLErrorBadServerResponse userInfo:mutableUserInfo], validationError);
 
-             //返回标识
             responseIsValid = NO;
         }
     }
 
-    
-    //给我们传过来的错误指针赋值
     if (error && !responseIsValid) {
-        
         *error = validationError;
     }
 
-    //返回是否错误标识
     return responseIsValid;
 }
 
@@ -312,40 +242,15 @@ static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingO
         }
     }
 
-    // Workaround for behavior of Rails to return a single space for `head :ok` (a workaround for a bug in Safari), which is not interpreted as valid input by NSJSONSerialization.
-    // See https://github.com/rails/rails/issues/1742
-    NSStringEncoding stringEncoding = self.stringEncoding;
-    if (response.textEncodingName) {
-        CFStringEncoding encoding = CFStringConvertIANACharSetNameToEncoding((CFStringRef)response.textEncodingName);
-        if (encoding != kCFStringEncodingInvalidId) {
-            stringEncoding = CFStringConvertEncodingToNSStringEncoding(encoding);
-        }
-    }
-
     id responseObject = nil;
     NSError *serializationError = nil;
-    @autoreleasepool {
-        NSString *responseString = [[NSString alloc] initWithData:data encoding:stringEncoding];
-        if (responseString && ![responseString isEqualToString:@" "]) {
-            // Workaround for a bug in NSJSONSerialization when Unicode character escape codes are used instead of the actual character
-            // See http://stackoverflow.com/a/12843465/157142
-            data = [responseString dataUsingEncoding:NSUTF8StringEncoding];
-
-            if (data) {
-                if ([data length] > 0) {
-                    responseObject = [NSJSONSerialization JSONObjectWithData:data options:self.readingOptions error:&serializationError];
-                } else {
-                    return nil;
-                }
-            } else {
-                NSDictionary *userInfo = @{
-                                           NSLocalizedDescriptionKey: NSLocalizedStringFromTable(@"Data failed decoding as a UTF-8 string", @"AFNetworking", nil),
-                                           NSLocalizedFailureReasonErrorKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Could not decode string: %@", @"AFNetworking", nil), responseString]
-                                           };
-
-                serializationError = [NSError errorWithDomain:AFURLResponseSerializationErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo];
-            }
-        }
+    // Workaround for behavior of Rails to return a single space for `head :ok` (a workaround for a bug in Safari), which is not interpreted as valid input by NSJSONSerialization.
+    // See https://github.com/rails/rails/issues/1742
+    BOOL isSpace = [data isEqualToData:[NSData dataWithBytes:" " length:1]];
+    if (data.length > 0 && !isSpace) {
+        responseObject = [NSJSONSerialization JSONObjectWithData:data options:self.readingOptions error:&serializationError];
+    } else {
+        return nil;
     }
 
     if (self.removesKeysWithNullValues && responseObject) {

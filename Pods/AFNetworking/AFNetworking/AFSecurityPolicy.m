@@ -1,5 +1,5 @@
 // AFSecurityPolicy.m
-// Copyright (c) 2011–2015 Alamofire Software Foundation (http://alamofire.org/)
+// Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -155,6 +155,28 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
 
 @implementation AFSecurityPolicy
 
++ (NSSet *)certificatesInBundle:(NSBundle *)bundle {
+    NSArray *paths = [bundle pathsForResourcesOfType:@"cer" inDirectory:@"."];
+
+    NSMutableSet *certificates = [NSMutableSet setWithCapacity:[paths count]];
+    for (NSString *path in paths) {
+        NSData *certificateData = [NSData dataWithContentsOfFile:path];
+        [certificates addObject:certificateData];
+    }
+
+    return [NSSet setWithSet:certificates];
+}
+
++ (NSSet *)defaultPinnedCertificates {
+    static NSSet *_defaultPinnedCertificates = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+        _defaultPinnedCertificates = [self certificatesInBundle:bundle];
+    });
+
+    return _defaultPinnedCertificates;
+}
 
 + (instancetype)defaultPolicy {
     AFSecurityPolicy *securityPolicy = [[self alloc] init];
@@ -203,31 +225,6 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
     } else {
         self.pinnedPublicKeys = nil;
     }
-}
-
-
-
-+ (NSSet *)certificatesInBundle:(NSBundle *)bundle {
-    NSArray *paths = [bundle pathsForResourcesOfType:@"cer" inDirectory:@"."];
-    
-    NSMutableSet *certificates = [NSMutableSet setWithCapacity:[paths count]];
-    for (NSString *path in paths) {
-        NSData *certificateData = [NSData dataWithContentsOfFile:path];
-        [certificates addObject:certificateData];
-    }
-    
-    return [NSSet setWithSet:certificates];
-}
-
-+ (NSSet *)defaultPinnedCertificates {
-    static NSSet *_defaultPinnedCertificates = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        NSBundle *bundle = [NSBundle bundleForClass:[self class]];
-        _defaultPinnedCertificates = [self certificatesInBundle:bundle];
-    });
-    
-    return _defaultPinnedCertificates;
 }
 
 #pragma mark -
@@ -307,19 +304,11 @@ static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) {
     return NO;
 }
 
-
-
-
-
 #pragma mark - NSKeyValueObserving
 
 + (NSSet *)keyPathsForValuesAffectingPinnedPublicKeys {
     return [NSSet setWithObject:@"pinnedCertificates"];
 }
-
-
-
-
 
 #pragma mark - NSSecureCoding
 
