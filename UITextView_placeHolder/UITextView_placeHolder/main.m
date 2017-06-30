@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 
+
+//分别代表命令行符号和数量
 int main(int argc, char * argv[]) {
     @autoreleasepool {
         return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));

@@ -268,25 +268,42 @@ didCompleteWithError:(NSError *)error
         self.mutableData = nil;
     }
 
+    
+    
     if (self.downloadFileURL) {
+        
         userInfo[AFNetworkingTaskDidCompleteAssetPathKey] = self.downloadFileURL;
+        
     } else if (data) {
+        
         userInfo[AFNetworkingTaskDidCompleteResponseDataKey] = data;
     }
 
     if (error) {
+        
         userInfo[AFNetworkingTaskDidCompleteErrorKey] = error;
 
         dispatch_group_async(manager.completionGroup ?: url_session_manager_completion_group(), manager.completionQueue ?: dispatch_get_main_queue(), ^{
+            
+            
+            NSLog(@"%@",[NSThread currentThread]);
+            
+            
             if (self.completionHandler) {
                 self.completionHandler(task.response, responseObject, error);
             }
 
             dispatch_async(dispatch_get_main_queue(), ^{
+                
+                NSLog(@"%@",[NSThread currentThread]);
+                
                 [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidCompleteNotification object:task userInfo:userInfo];
             });
         });
-    } else {
+    }
+    
+    
+    else {
         dispatch_async(url_session_manager_processing_queue(), ^{
             NSError *serializationError = nil;
             responseObject = [manager.responseSerializer responseObjectForResponse:task.response data:data error:&serializationError];
@@ -315,6 +332,9 @@ didCompleteWithError:(NSError *)error
         });
     }
 #pragma clang diagnostic pop
+    
+    
+    
 }
 
 #pragma mark - NSURLSessionDataTaskDelegate
@@ -513,10 +533,14 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     if (!self) {
         return nil;
     }
+    
 
+    
     if (!configuration) {
         configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     }
+    
+    
 
     self.sessionConfiguration = configuration;
     
@@ -784,9 +808,15 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
                              downloadProgress:(nullable void (^)(NSProgress *downloadProgress)) downloadProgressBlock
                             completionHandler:(nullable void (^)(NSURLResponse *response, id _Nullable responseObject,  NSError * _Nullable error))completionHandler {
 
+    
+    
     __block NSURLSessionDataTask *dataTask = nil;
     url_session_manager_create_task_safely(^{
+        
+        
         dataTask = [self.session dataTaskWithRequest:request];
+        
+        
     });
 
     [self addDelegateForDataTask:dataTask uploadProgress:uploadProgressBlock downloadProgress:downloadProgressBlock completionHandler:completionHandler];
@@ -1013,8 +1043,12 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
         disposition = self.sessionDidReceiveAuthenticationChallenge(session, challenge, &credential);
     } else {
         if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+            
             if ([self.securityPolicy evaluateServerTrust:challenge.protectionSpace.serverTrust forDomain:challenge.protectionSpace.host]) {
+                
+              
                 credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
+                
                 if (credential) {
                     disposition = NSURLSessionAuthChallengeUseCredential;
                 } else {
@@ -1125,12 +1159,14 @@ didCompleteWithError:(NSError *)error
 
     // delegate may be nil when completing a task in the background
     if (delegate) {
+        
         [delegate URLSession:session task:task didCompleteWithError:error];
 
         [self removeDelegateForTask:task];
     }
 
     if (self.taskDidComplete) {
+        
         self.taskDidComplete(session, task, error);
     }
 }
