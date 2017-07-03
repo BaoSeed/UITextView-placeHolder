@@ -21,6 +21,35 @@
 }
 
 
+
+/*
+ 这个方法中会传回你所定义的会话标志符。比如说我们之前所定义的“I am the Batman”。整个过程就像这样：名为“I am the Batman” 的会话结束了！之后您打算怎么做呢？无论我们之后是在发生错误时处理错误，还是会话成功完成，我们都必须要在这个方法中重新创建这个会话。至于代码是什么样子的，它实际上意味着使用同一个标识符创建另一个后台配置，然后用这个后台配置创建另一个会话。
+ */
+- (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)())completionHandler{
+  
+    
+
+    NSURLSessionConfiguration *config= [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:identifier];
+    
+    NSURLSession *backSession = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:nil];
+    
+    [backSession getTasksWithCompletionHandler:^(NSArray<NSURLSessionDataTask *> * _Nonnull dataTasks, NSArray<NSURLSessionUploadTask *> * _Nonnull uploadTasks, NSArray<NSURLSessionDownloadTask *> * _Nonnull downloadTasks) {
+        
+          // 执行您自己的任务请求！
+        
+        
+        
+    }];
+    
+
+}
+
+
+
+
+
+
+
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.

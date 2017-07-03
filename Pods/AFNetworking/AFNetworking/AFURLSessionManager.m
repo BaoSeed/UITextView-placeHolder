@@ -245,6 +245,10 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
     }
 }
 
+
+
+
+
 #pragma mark - NSURLSessionTaskDelegate
 
 - (void)URLSession:(__unused NSURLSession *)session
@@ -352,15 +356,25 @@ didCompleteWithError:(NSError *)error
       downloadTask:(NSURLSessionDownloadTask *)downloadTask
 didFinishDownloadingToURL:(NSURL *)location
 {
+    
+    
     NSError *fileManagerError = nil;
     self.downloadFileURL = nil;
 
+    
+    
+    
     if (self.downloadTaskDidFinishDownloading) {
+        
+        
         self.downloadFileURL = self.downloadTaskDidFinishDownloading(session, downloadTask, location);
+        
         if (self.downloadFileURL) {
+            
             [[NSFileManager defaultManager] moveItemAtURL:location toURL:self.downloadFileURL error:&fileManagerError];
 
             if (fileManagerError) {
+                
                 [[NSNotificationCenter defaultCenter] postNotificationName:AFURLSessionDownloadTaskDidFailToMoveFileNotification object:downloadTask userInfo:fileManagerError.userInfo];
             }
         }
@@ -496,6 +510,24 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 }
 @end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #pragma mark -
 
 @interface AFURLSessionManager ()
@@ -563,18 +595,26 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     self.lock.name = AFURLSessionManagerLockName;
 
     
+    //异步的获取当前session的所有未完成的task
+    //后台下载，置空task关联的代理
     [self.session getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
+        
+        
         for (NSURLSessionDataTask *task in dataTasks) {
+            
             [self addDelegateForDataTask:task uploadProgress:nil downloadProgress:nil completionHandler:nil];
         }
 
         for (NSURLSessionUploadTask *uploadTask in uploadTasks) {
+            
             [self addDelegateForUploadTask:uploadTask progress:nil completionHandler:nil];
         }
 
         for (NSURLSessionDownloadTask *downloadTask in downloadTasks) {
+            
             [self addDelegateForDownloadTask:downloadTask progress:nil destination:nil completionHandler:nil];
         }
+        
     }];
 
     return self;
@@ -684,8 +724,11 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
     delegate.manager = self;
     delegate.completionHandler = completionHandler;
 
+    
     if (destination) {
+        
         delegate.downloadTaskDidFinishDownloading = ^NSURL * (NSURLSession * __unused session, NSURLSessionDownloadTask *task, NSURL *location) {
+            
             return destination(location, task.response);
         };
     }
@@ -714,20 +757,34 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 #pragma mark -  tasks
 
 - (NSArray *)tasksForKeyPath:(NSString *)keyPath {
+    
     __block NSArray *tasks = nil;
+    
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    
     [self.session getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
+        
         if ([keyPath isEqualToString:NSStringFromSelector(@selector(dataTasks))]) {
+            
             tasks = dataTasks;
+            
         } else if ([keyPath isEqualToString:NSStringFromSelector(@selector(uploadTasks))]) {
+            
             tasks = uploadTasks;
+            
         } else if ([keyPath isEqualToString:NSStringFromSelector(@selector(downloadTasks))]) {
+            
             tasks = downloadTasks;
+            
         } else if ([keyPath isEqualToString:NSStringFromSelector(@selector(tasks))]) {
+            
+            //如果数组内是自定义对象的话，@distinctUnionOfObjects.property
+            //unionOfObjects.prooerty:没有去重
             tasks = [@[dataTasks, uploadTasks, downloadTasks] valueForKeyPath:@"@unionOfArrays.self"];
         }
 
         dispatch_semaphore_signal(semaphore);
+        
     }];
 
     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
@@ -1234,8 +1291,12 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask
 }
 
 - (void)URLSessionDidFinishEventsForBackgroundURLSession:(NSURLSession *)session {
+    
+    
     if (self.didFinishEventsForBackgroundURLSession) {
+        
         dispatch_async(dispatch_get_main_queue(), ^{
+            
             self.didFinishEventsForBackgroundURLSession(session);
         });
     }
@@ -1248,21 +1309,35 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask
 didFinishDownloadingToURL:(NSURL *)location
 {
     AFURLSessionManagerTaskDelegate *delegate = [self delegateForTask:downloadTask];
+    
+    
     if (self.downloadTaskDidFinishDownloading) {
+        
         NSURL *fileURL = self.downloadTaskDidFinishDownloading(session, downloadTask, location);
+        
         if (fileURL) {
+            
             delegate.downloadFileURL = fileURL;
+            
             NSError *error = nil;
+            
             [[NSFileManager defaultManager] moveItemAtURL:location toURL:fileURL error:&error];
+            
             if (error) {
+                
                 [[NSNotificationCenter defaultCenter] postNotificationName:AFURLSessionDownloadTaskDidFailToMoveFileNotification object:downloadTask userInfo:error.userInfo];
             }
 
+            
+            //这里实现了，AFURLSessionManagerTaskDelegate就不要重复实现了
             return;
         }
     }
 
+    
+    
     if (delegate) {
+        
         [delegate URLSession:session downloadTask:downloadTask didFinishDownloadingToURL:location];
     }
 }
